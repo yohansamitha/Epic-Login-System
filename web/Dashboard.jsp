@@ -100,22 +100,26 @@
         let password = $("#password").val();
         console.log(userName, userAddress, phoneNumber, emailAddress, password);
 
-        $.ajax({
-            url: 'userManageServlet',
-            method: 'POST',
-            async: true,
-            contentType: "application/json",
-            data: JSON.stringify({
-                userName: userName,
-                userAddress: userAddress,
-                phoneNumber: phoneNumber,
-                emailAddress: emailAddress,
-                password: password
-            }),
-            success: function (data, responseState, xhr) {
-                console.log(data);
-            }
-        });
+        if (userName !== "" && userAddress !== "" && phoneNumber !== "" && emailAddress !== "" && password !== "") {
+            $.ajax({
+                url: 'userManageServlet',
+                method: 'POST',
+                async: true,
+                contentType: "application/json",
+                data: JSON.stringify({
+                    userName: userName,
+                    userAddress: userAddress,
+                    phoneNumber: phoneNumber,
+                    emailAddress: emailAddress,
+                    password: password
+                }),
+                success: function (data, responseState, xhr) {
+                    console.log(data);
+                }
+            });
+        } else {
+            alert("Please Enter Valid Information");
+        }
     });
 
     $("#btnUpdateUser").click(function () {
@@ -137,7 +141,17 @@
     });
 
     $("#btnLogout").click(function () {
-
+        $.ajax({
+            url: 'loginServlet',
+            method: 'DELETE',
+            async: true,
+            success: function (data, responseState, xhr) {
+                console.log(data);
+                if (responseState === 'success') {
+                    window.location.reload();
+                }
+            }
+        });
     });
 
 </script>

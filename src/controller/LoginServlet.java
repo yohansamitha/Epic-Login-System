@@ -6,6 +6,7 @@ import dto.UserDTO;
 
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,9 +28,10 @@ public class LoginServlet extends HttpServlet {
         System.out.println(userName);
         System.out.println(password);
         JsonObjectBuilder resp = Json.createObjectBuilder();
-        PrintWriter writer = response.getWriter();
-        if (userName != null && !userName.isEmpty() && password != null && !password.isEmpty()) {
-            try {
+        PrintWriter writer = null;
+        try {
+            writer = response.getWriter();
+            if (userName != null && !userName.isEmpty() && password != null && !password.isEmpty()) {
                 UserDTO userDTO = userManageBO.validateUser(userName, password);
                 if (null != userDTO) {
                     resp.add("status", "200");
@@ -46,17 +48,33 @@ public class LoginServlet extends HttpServlet {
                     resp.add("response", "REFRESH");
                     writer.print(resp.build());
                 }
-            } catch (SQLException | ClassNotFoundException throwables) {
-                throwables.printStackTrace();
+            } else {
+                resp.add("status", "400");
+                resp.add("operation", "unsuccessful");
+                resp.add("message", "username or Password is missing");
+                resp.add("response", "REFRESH");
+                writer.print(resp.build());
             }
-        } else {
-            resp.add("status", "400");
-            resp.add("operation", "unsuccessful");
-            resp.add("message", "username or Password is missing");
-            resp.add("response", "REFRESH");
-            writer.print(resp.build());
+            writer.close();
+        } catch (SQLException | ClassNotFoundException | IOException | NullPointerException e) {
+            e.printStackTrace();
         }
-        writer.close();
+    }
 
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        PrintWriter writer = null;
+        JsonObjectBuilder response = null;
+        try {
+            HttpSession httpSession = req.getSession();
+            httpSession.removeAttribute("user");
+            response = Json.createObjectBuilder();
+            response.add("logout", "successful");
+            writer = resp.getWriter();
+            writer.print(response.build());
+            writer.close();
+        } catch (IOException | NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 }
