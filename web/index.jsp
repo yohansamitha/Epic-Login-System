@@ -29,6 +29,7 @@
 </section>
 <script src="assets/css/jquery-3.6.0.min.js"></script>
 <script>
+
     $("#btnLogin").click(function () {
         let txtUserName = $("#txtUserName").val();
         let txtPassword = $("#txtPassword").val();
@@ -39,27 +40,31 @@
             $('#txtPassword').val("");
         }
 
-        $.ajax({
-            url: 'loginServlet',
-            method: 'GET',
-            async: true,
-            contentType: "application/json",
-            dataType: "json",
-            headers: {
-                "txtUserName": txtUserName,
-                "txtPassword": txtPassword
-            },
-            success: function (data, responseState, xhr) {
-                console.log(data);
-                console.log(data.status);
-                if (data.status === "200") {
-                    window.location.href = "http://localhost:8080/epl/Dashboard.jsp";
-                } else {
-                    clear();
-                    alert(data.message);
+        if (txtUserName !== "" && txtPassword !== "") {
+            $.ajax({
+                url: 'loginServlet',
+                method: 'GET',
+                async: true,
+                contentType: "application/json",
+                dataType: "json",
+                headers: {
+                    "txtUserName": txtUserName,
+                    "txtPassword": txtPassword
+                },
+                success: function (data, responseState, xhr) {
+                    console.log(data);
+                    console.log(data.status);
+                    if (data.status === "200") {
+                        window.location.href = "http://localhost:8080/epl/Dashboard.jsp";
+                    } else {
+                        clear();
+                        alert(data.message);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            alert("Please enter username and password")
+        }
     });
 </script>
 </body>
