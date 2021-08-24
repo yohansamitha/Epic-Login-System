@@ -19,5 +19,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="Tomcat 8.5.61" level="application_server_libraries" />
+    <orderEntry type="library" name="javax.json-1.1.4" level="project" />
+    <orderEntry type="library" name="mysql:mysql-connector-java:8.0.19" level="project" />
   </component>
 </module>
