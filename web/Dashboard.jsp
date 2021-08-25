@@ -199,7 +199,20 @@
     });
 
     $("#btnDeleteUser").click(function () {
-
+        console.log(selectedUserId, "asdasdasdz")
+        if (selectedUserId !== undefined) {
+            $.ajax({
+                url: 'userManageServlet?id=' + selectedUserId,
+                method: 'DELETE',
+                async: true,
+                dataType: "json",
+                success: function (data, responseState, xhr) {
+                    console.log(data);
+                }
+            });
+        } else {
+            alert("Please Enter Valid Information");
+        }
     });
 
     function clear() {

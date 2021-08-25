@@ -103,7 +103,7 @@ public class UserManageServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String id = request.getParameter("Id");
+        String id = request.getParameter("id");
         try (PrintWriter writer = response.getWriter()) {
             if (null != id) {
                 if (!id.trim().isEmpty()) {
