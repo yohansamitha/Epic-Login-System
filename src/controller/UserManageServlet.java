@@ -2,11 +2,12 @@ package controller;
 
 import bo.BOFactory;
 import bo.custom.UserManageBO;
+import com.google.gson.Gson;
 import dto.UserDTO;
+import util.StandardResponse;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,24 +25,41 @@ public class UserManageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            JsonReader reader = Json.createReader(request.getReader());
-            JsonObject user = reader.readObject();
-            String userName = user.getString("userName");
-            String userAddress = user.getString("userAddress");
-            String phoneNumber = user.getString("phoneNumber");
-            String emailAddress = user.getString("emailAddress");
-            String password = user.getString("password");
-            userManageBO.saveUser(new UserDTO(userName, userAddress, phoneNumber, emailAddress, password));
-            PrintWriter writer = response.getWriter();
+        try (JsonReader reader = Json.createReader(request.getReader()); PrintWriter writer = response.getWriter()) {
             response.setContentType("application/json");
-            JsonObjectBuilder responseObject = Json.createObjectBuilder();
-            responseObject.add("User Add", "Successful");
-            writer.print(responseObject.build());
-            writer.close();
-            reader.close();
+            JsonObject user = reader.readObject();
+            UserDTO userDTO = new UserDTO(user.getString("userName"), user.getString("userAddress"), user.getString("phoneNumber"),
+                    user.getString("emailAddress"), user.getString("password"));
+            String isValidUser = validateUserData(userDTO);
+            if (isValidUser.equals("true")) {
+                if (userManageBO.saveUser(userDTO))
+                    writer.print(new Gson().toJson(new StandardResponse("201", "user save successful", userDTO)));
+                else {
+                    writer.print(new Gson().toJson(new StandardResponse("500", "something went wrong", userDTO)));
+                }
+            } else {
+                writer.print(new Gson().toJson(new StandardResponse("400", isValidUser, userDTO)));
+            }
         } catch (SQLException | ClassNotFoundException throwables) {
             throwables.printStackTrace();
+        }
+    }
+
+    private String validateUserData(UserDTO userDTO) {
+        if (userDTO == null) {
+            return "No User Data Found";
+        } else if (userDTO.getName().trim().isEmpty()) {
+            return "No User Name Found";
+        } else if (userDTO.getAddress().trim().isEmpty()) {
+            return "No User Address Found";
+        } else if (userDTO.getContact().trim().isEmpty()) {
+            return "No User Contact Found";
+        } else if (userDTO.getEmailAddress().trim().isEmpty()) {
+            return "No User Email Address Found";
+        } else if (userDTO.getPassword().trim().isEmpty()) {
+            return "No User Password Found";
+        } else {
+            return "true";
         }
     }
 

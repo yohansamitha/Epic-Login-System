@@ -13,8 +13,8 @@ public class UserManageBOImpl implements UserManageBO {
     private final UserManageDAO userManageDAO = DAOFactory.getInstance().getDAO(DAOFactory.DAOTypes.UserManageDAOImpl);
 
     @Override
-    public void saveUser(UserDTO userDTO) throws SQLException, ClassNotFoundException {
-        userManageDAO.add(new User(userDTO.getName(), userDTO.getAddress(), userDTO.getContact(), userDTO.getEmailAddress(),
+    public boolean saveUser(UserDTO userDTO) throws SQLException, ClassNotFoundException {
+        return userManageDAO.add(new User(userDTO.getName(), userDTO.getAddress(), userDTO.getContact(), userDTO.getEmailAddress(),
                 userDTO.getPassword()));
     }
 
