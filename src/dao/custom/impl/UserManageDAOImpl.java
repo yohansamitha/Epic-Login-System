@@ -22,8 +22,9 @@ public class UserManageDAOImpl implements UserManageDAO {
     }
 
     @Override
-    public boolean delete(String s) throws SQLException, ClassNotFoundException {
-        return false;
+    public boolean delete(String id) throws SQLException, ClassNotFoundException {
+        String sql = "delete from user where Id=?";
+        return CrudUtil.executeUpdate(sql, id);
     }
 
     @Override

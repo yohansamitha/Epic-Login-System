@@ -42,4 +42,9 @@ public class UserManageBOImpl implements UserManageBO {
         }
         return userDTOS;
     }
+
+    @Override
+    public boolean deleteUser(String id) throws SQLException, ClassNotFoundException {
+        return userManageDAO.delete(id);
+    }
 }

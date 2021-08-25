@@ -41,3 +41,7 @@ set name=?,
     emailAddress=?,
     password=?
 where Id = ?;
+
+delete
+from user
+where Id = 11

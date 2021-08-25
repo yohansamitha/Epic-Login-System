@@ -103,6 +103,23 @@ public class UserManageServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//
+        String id = request.getParameter("Id");
+        try (PrintWriter writer = response.getWriter()) {
+            if (null != id) {
+                if (!id.trim().isEmpty()) {
+                    if (userManageBO.deleteUser(id)) {
+                        writer.print(new Gson().toJson(new StandardResponse("204", "user delete successful", "")));
+                    } else {
+                        writer.print(new Gson().toJson(new StandardResponse("500", "something went wrong", "")));
+                    }
+                } else {
+                    writer.print(new Gson().toJson(new StandardResponse("400", "No Valid ID found", "")));
+                }
+            } else {
+                writer.print(new Gson().toJson(new StandardResponse("400", "No Valid ID found", "")));
+            }
+        } catch (IOException | SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
