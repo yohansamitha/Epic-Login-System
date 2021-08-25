@@ -7,6 +7,7 @@ import dto.UserDTO;
 import util.StandardResponse;
 
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.servlet.ServletException;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 @WebServlet(name = "UserManageServlet", urlPatterns = "/userManageServlet")
 public class UserManageServlet extends HttpServlet {
@@ -65,7 +67,16 @@ public class UserManageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//
+        try (PrintWriter writer = response.getWriter()) {
+            ArrayList<UserDTO> all = userManageBO.getAll();
+            JsonArrayBuilder allUsers = Json.createArrayBuilder();
+            for (UserDTO userDTO : all) {
+                allUsers.add(new Gson().toJson(userDTO));
+            }
+            writer.print(new Gson().toJson(new StandardResponse("200", "All Users", all)));
+        } catch (SQLException | ClassNotFoundException | IOException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override

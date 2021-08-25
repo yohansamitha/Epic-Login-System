@@ -45,7 +45,20 @@ public class UserManageDAOImpl implements UserManageDAO {
 
     @Override
     public ArrayList<User> getAll() throws SQLException, ClassNotFoundException {
-        return null;
+        String sql = "select * from User";
+        ArrayList<User> allUsers = new ArrayList<>();
+        ResultSet resultSet = CrudUtil.executeQuery(sql);
+        while (resultSet.next()) {
+            allUsers.add(new User(
+                    resultSet.getInt(1),
+                    resultSet.getString(2),
+                    resultSet.getString(3),
+                    resultSet.getString(4),
+                    resultSet.getString(5),
+                    ""
+            ));
+        }
+        return allUsers;
     }
 
     @Override

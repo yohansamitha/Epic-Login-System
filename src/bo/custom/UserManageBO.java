@@ -4,6 +4,7 @@ import bo.SuperBO;
 import dto.UserDTO;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public interface UserManageBO extends SuperBO {
     boolean saveUser(UserDTO userDTO) throws SQLException, ClassNotFoundException;
@@ -12,4 +13,5 @@ public interface UserManageBO extends SuperBO {
 
     boolean updateUser(UserDTO userDTO) throws SQLException, ClassNotFoundException;
 
+    ArrayList<UserDTO> getAll() throws SQLException, ClassNotFoundException;
 }
