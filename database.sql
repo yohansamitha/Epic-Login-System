@@ -23,4 +23,21 @@ from User;
 select *
 from User
 where emailAddress = "admin@gmail.com"
-  and password = "admin"
+  and password = "admin";
+
+update User
+set name="awanthi",
+    address="ambalangoda",
+    contact="54444744",
+    emailAddress="awanthi456456",
+    password="123456789"
+where Id = "11";
+
+
+update User
+set name=?,
+    address=?,
+    contact=?,
+    emailAddress=?,
+    password=?
+where Id = ?;

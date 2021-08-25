@@ -28,7 +28,14 @@ public class UserManageDAOImpl implements UserManageDAO {
 
     @Override
     public boolean update(User user) throws SQLException, ClassNotFoundException {
-        return false;
+        String sql = "update User set name=?,address=?,contact=?,emailAddress=?,password=? where Id = ?;";
+        return CrudUtil.executeUpdate(sql,
+                user.getName(),
+                user.getAddress(),
+                user.getContact(),
+                user.getEmailAddress(),
+                user.getPassword(),
+                user.getId());
     }
 
     @Override

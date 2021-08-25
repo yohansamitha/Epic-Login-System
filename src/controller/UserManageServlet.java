@@ -70,7 +70,24 @@ public class UserManageServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//
+        try (JsonReader reader = Json.createReader(request.getReader()); PrintWriter writer = response.getWriter()) {
+            response.setContentType("application/json");
+            JsonObject user = reader.readObject();
+            UserDTO userDTO = new UserDTO(user.getInt("id"), user.getString("userName"), user.getString("userAddress"), user.getString("phoneNumber"),
+                    user.getString("emailAddress"), user.getString("password"));
+            String isValidUser = validateUserData(userDTO);
+            if (isValidUser.equals("true")) {
+                if (userManageBO.updateUser(userDTO))
+                    writer.print(new Gson().toJson(new StandardResponse("204", "user update successful", userDTO)));
+                else {
+                    writer.print(new Gson().toJson(new StandardResponse("500", "something went wrong", userDTO)));
+                }
+            } else {
+                writer.print(new Gson().toJson(new StandardResponse("400", isValidUser, userDTO)));
+            }
+        } catch (SQLException | ClassNotFoundException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
