@@ -67,7 +67,7 @@
                         <th scope="col">email</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tblUserDetail">
                     <%--<tr>
                         <th scope="row">I001</th>
                         <td>Mark</td>
@@ -92,6 +92,48 @@
 <script src="assets/css/bootstrap/js/bootstrap.min.js"></script>
 <script src="assets/css/jquery-3.6.0.min.js"></script>
 <script>
+    let selectedUserId;
+
+    function loadAllUsers() {
+        console.log("testing");
+        clear();
+        $.ajax({
+            url: 'userManageServlet',
+            method: 'GET',
+            async: true,
+            dataType: "json",
+            success: function (data, responseState, xhr) {
+                console.log(data);
+                console.log(data.data);
+                if (responseState === 'success') {
+                    $('#tblUserDetail>tr').off('click');
+                    $('#tblUserDetail').empty();
+                    for (let user of data.data) {
+                        let row = "<tr>" +
+                            "<td>" + user.id + "</td>" +
+                            "<td>" + user.name + "</td>" +
+                            "<td>" + user.address + "</td>" +
+                            "<td>" + user.contact + "</td>" +
+                            "<td>" + user.emailAddress + "</td>>" +
+                            "</tr>";
+                        $('#tblUserDetail').append(row);
+                    }
+                    $('#tblUserDetail>tr').click(function () {
+                        selectedUserId = parseInt($(this).children('td:eq(0)').text());
+                        $('#userName').val($(this).children('td:eq(1)').text());
+                        $('#userAddress').val($(this).children('td:eq(2)').text());
+                        $('#phoneNumber').val($(this).children('td:eq(3)').text());
+                        $('#emailAddress').val($(this).children('td:eq(4)').text());
+                        console.log(selectedUserId, "selected user id");
+                        console.log(typeof selectedUserId, "selected user id type");
+                    });
+                }
+            }
+        });
+    }
+
+    loadAllUsers();
+
     $("#btnSaveUser").click(function () {
         let userName = $("#userName").val();
         let userAddress = $("#userAddress").val();
@@ -106,7 +148,41 @@
                 method: 'POST',
                 async: true,
                 contentType: "application/json",
+                dataType: "json",
                 data: JSON.stringify({
+                    userName: userName,
+                    userAddress: userAddress,
+                    phoneNumber: phoneNumber,
+                    emailAddress: emailAddress,
+                    password: password
+                }),
+                success: function (data, responseState, xhr) {
+                    console.log(data);
+
+                }
+            });
+        } else {
+            alert("Please Enter Valid Information");
+        }
+    });
+
+    $("#btnUpdateUser").click(function () {
+        let userName = $("#userName").val();
+        let userAddress = $("#userAddress").val();
+        let phoneNumber = $("#phoneNumber").val();
+        let emailAddress = $("#emailAddress").val();
+        let password = $("#password").val();
+        console.log(userName, userAddress, phoneNumber, emailAddress, password);
+
+        if (selectedUserId !== undefined && userName !== "" && userAddress !== "" && phoneNumber !== "" && emailAddress !== "") {
+            $.ajax({
+                url: 'userManageServlet',
+                method: 'PUT',
+                async: true,
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
+                    id: selectedUserId,
                     userName: userName,
                     userAddress: userAddress,
                     phoneNumber: phoneNumber,
@@ -122,10 +198,8 @@
         }
     });
 
-    $("#btnUpdateUser").click(function () {
-    });
-
     $("#btnDeleteUser").click(function () {
+
     });
 
     function clear() {
@@ -134,6 +208,9 @@
         $("#phoneNumber").val("");
         $("#emailAddress").val("");
         $("#password").val("");
+        selectedUserId = undefined;
+        // loadAllUsers();
+        console.log(selectedUserId, "selected user id");
     }
 
     $("#btnCancel").click(function () {
