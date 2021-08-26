@@ -158,7 +158,11 @@
                 }),
                 success: function (data, responseState, xhr) {
                     console.log(data);
-
+                    alert(data.message);
+                    loadAllUsers();
+                    if (data.status === "201") {
+                        clear();
+                    }
                 }
             });
         } else {
@@ -171,7 +175,6 @@
         let userAddress = $("#userAddress").val();
         let phoneNumber = $("#phoneNumber").val();
         let emailAddress = $("#emailAddress").val();
-        let password = $("#password").val();
         console.log(userName, userAddress, phoneNumber, emailAddress, password);
 
         if (selectedUserId !== undefined && userName !== "" && userAddress !== "" && phoneNumber !== "" && emailAddress !== "") {
@@ -187,10 +190,15 @@
                     userAddress: userAddress,
                     phoneNumber: phoneNumber,
                     emailAddress: emailAddress,
-                    password: password
+                    password: "Password Not updating"
                 }),
                 success: function (data, responseState, xhr) {
                     console.log(data);
+                    alert(data.message);
+                    loadAllUsers();
+                    if (data.status === "204") {
+                        clear();
+                    }
                 }
             });
         } else {
@@ -208,6 +216,9 @@
                 dataType: "json",
                 success: function (data, responseState, xhr) {
                     console.log(data);
+                    alert(data.message);
+                    clear();
+                    loadAllUsers();
                 }
             });
         } else {
